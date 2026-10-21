@@ -4,7 +4,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 
 const PORT = Number(process.env.PORT || 4000);
-const PUBLIC_DIR = process.env.PUBLIC_DIR || join(process.cwd(), '../frontend/public');
+const PUBLIC_DIR = process.env.PUBLIC_DIR || join(process.cwd(), '../frontend');
 const DATA_DIR = join(process.cwd(), 'data');
 const SEED_FILE = join(DATA_DIR, 'seed-data.json');
 const DB_FILE = join(DATA_DIR, 'gynaeq-db.json');
