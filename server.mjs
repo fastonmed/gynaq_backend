@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
 import { readFile, writeFile, stat, copyFile } from 'node:fs/promises';
 import { existsSync, mkdirSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
@@ -85,22 +86,49 @@ function parseJsonBody(req) {
 function sendJson(res, statusCode, data) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   });
   res.end(JSON.stringify(data));
 }
 
+const sessions = new Map();
+const loginAttempts = new Map();
+const allowedOrigins = new Set(['https://www.gynaeq.com', 'https://gynaeq.com']);
+if (process.env.DEV_ORIGIN) allowedOrigins.add(process.env.DEV_ORIGIN);
+function authenticated(req) {
+  const token = (req.headers.cookie || '').split(';').map(v => v.trim()).find(v => v.startsWith('gynaeq_session='))?.slice(15);
+  const expiry = sessions.get(token);
+  if (!expiry || expiry < Date.now()) { sessions.delete(token); return false; }
+  return true;
+}
+function equalSecret(a, b) {
+  const hash = v => createHash('sha256').update(String(v)).digest();
+  return timingSafeEqual(hash(a), hash(b));
+}
+function sessionCookie(token, age) {
+  return `gynaeq_session=${token}; HttpOnly; Secure; SameSite=Strict; Path=/api; Max-Age=${age}`;
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = url.pathname;
 
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.has(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Vary', 'Origin');
+  }
+  if (pathname.startsWith('/api/')) res.setHeader('Cache-Control', 'no-store');
+  if (origin && !allowedOrigins.has(origin) && !['GET', 'HEAD'].includes(req.method)) {
+    return sendJson(res, 403, { error: 'Origin not allowed' });
+  }
+
   // Handle CORS Preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type'
     });
     return res.end();
@@ -109,10 +137,46 @@ const server = http.createServer(async (req, res) => {
   // ─── API ROUTES ───────────────────────────────────────────────────────────
   if (pathname.startsWith('/api/')) {
     try {
+      if (pathname === '/api/auth/login' && req.method === 'POST') {
+        if (!process.env.ADMIN_PASSWORD) return sendJson(res, 503, { error: 'Administrator password has not been configured in hosting yet.' });
+        const key = req.socket.remoteAddress;
+        const now = Date.now();
+        let attempt = loginAttempts.get(key);
+        if (!attempt || attempt.until < now) { attempt = { count: 0, until: now + 900000 }; loginAttempts.set(key, attempt); }
+        if (++attempt.count > 10) return sendJson(res, 429, { error: 'Too many attempts. Try again in 15 minutes.' });
+        const body = await parseJsonBody(req);
+        if (!equalSecret(String(body.email || '').trim().toLowerCase(), (process.env.ADMIN_EMAIL || 'fastonmed@gmail.com').toLowerCase()) || !equalSecret(body.password || '', process.env.ADMIN_PASSWORD)) {
+          return sendJson(res, 401, { error: 'Incorrect email or password.' });
+        }
+        const token = randomBytes(32).toString('hex');
+        for (const [key, expiry] of sessions) if (expiry < now) sessions.delete(key);
+        sessions.set(token, now + 28800000);
+        loginAttempts.delete(key);
+        res.setHeader('Set-Cookie', sessionCookie(token, 28800));
+        return sendJson(res, 200, { success: true });
+      }
+      if (pathname === '/api/auth/me' && req.method === 'GET') {
+        return sendJson(res, authenticated(req) ? 200 : 401, { authenticated: authenticated(req) });
+      }
+      if (pathname === '/api/auth/logout' && req.method === 'POST') {
+        const token = (req.headers.cookie || '').split(';').map(v => v.trim()).find(v => v.startsWith('gynaeq_session='))?.slice(15);
+        sessions.delete(token);
+        res.setHeader('Set-Cookie', sessionCookie('', 0));
+        return sendJson(res, 200, { success: true });
+      }
+      const isAdmin = authenticated(req);
+      if (!['GET', 'HEAD'].includes(req.method) && !(req.method === 'POST' && pathname === '/api/enquiries') && !isAdmin) {
+        return sendJson(res, 401, { error: 'Sign in as administrator to make changes.' });
+      }
       // GET /api/data
       if (req.method === 'GET' && pathname === '/api/data') {
         const db = await readDb();
-        return sendJson(res, 200, db);
+        if (isAdmin) return sendJson(res, 200, db);
+        const products = (db.products || []).map(product => {
+          const { purchaseCost, traderPriceMin, traderPriceMax, margin, profitMargin, ...publicProduct } = product;
+          return publicProduct;
+        });
+        return sendJson(res, 200, { company: db.company, categories: db.categories || [], brands: db.brands || [], products });
       }
 
       // POST /api/enquiries (New RFQ from website or admin)

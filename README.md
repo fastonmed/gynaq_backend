@@ -15,3 +15,7 @@ Open http://localhost:4000. Set `PORT` to change the port or `PUBLIC_DIR` to an 
 The server creates `data/gynaeq-db.json` from `data/seed-data.json` on first start. The runtime database is ignored by Git. Customer enquiries, quotations, and service contracts are excluded from the initial seed.
 
 Before public deployment, add authentication and authorization to administrative API routes. The imported server currently exposes data and write endpoints without authentication.
+
+## Administrator access
+
+Set `ADMIN_EMAIL=fastonmed@gmail.com` and a strong `ADMIN_PASSWORD` in Hostinger Node.js environment variables. Without a configured password, sign-in stays disabled and administrative writes return 401. Sessions last eight hours and expire when the server restarts. Public visitors can read the catalog and submit enquiries; other writes and private CRM data require sign-in.
