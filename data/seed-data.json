@@ -126,6 +126,12 @@
       "count": 0,
       "featured": false,
       "image": "/assets/speculums.jpg"
+    },
+    {
+      "id": "critical-care",
+      "name": "Critical Care Equipment",
+      "description": "Hospital ventilation and critical care equipment.",
+      "image": "/assets/products/ventilator.png"
     }
   ],
   "brands": [
@@ -222,7 +228,7 @@
       "phone": "+971 4 879 2300",
       "email": "operations@gynaeq.com",
       "website": "https://www.gynaeq.com",
-      "flag": "\ud83c\udde6\ud83c\uddea"
+      "flag": "🇦🇪"
     },
     {
       "id": "trader-edan",
@@ -243,7 +249,7 @@
       "phone": "+971 4 456 7810",
       "email": "arthur.vance@edan.com",
       "website": "https://www.edan.com",
-      "flag": "\ud83c\udf10"
+      "flag": "🌐"
     },
     {
       "id": "trader-cami-italy",
@@ -264,7 +270,7 @@
       "phone": "+971 4 390 1250",
       "email": "m.bellini@ca-mi.it",
       "website": "https://www.ca-mi.it",
-      "flag": "\ud83c\uddee\ud83c\uddf9"
+      "flag": "🇮🇹"
     },
     {
       "id": "trader-led-spa",
@@ -285,7 +291,7 @@
       "phone": "+971 4 442 8890",
       "email": "f.rossi@led.it",
       "website": "https://www.led.it",
-      "flag": "\ud83c\uddee\ud83c\uddf9"
+      "flag": "🇮🇹"
     },
     {
       "id": "trader-basco-india",
@@ -306,7 +312,7 @@
       "phone": "+971 4 227 6540",
       "email": "r.sharma@bascoindia.com",
       "website": "https://www.bascoindia.com",
-      "flag": "\ud83c\uddee\ud83c\uddf3"
+      "flag": "🇮🇳"
     },
     {
       "id": "trader-sunland",
@@ -327,7 +333,7 @@
       "phone": "+971 4 501 5560",
       "email": "kevin.zhang@sunlandscope.com",
       "website": "https://www.sunlandscope.com",
-      "flag": "\ud83c\udf10"
+      "flag": "🌐"
     },
     {
       "id": "trader-aveus",
@@ -348,7 +354,7 @@
       "phone": "+971 2 698 4300",
       "email": "d.miller@aveusmed.com",
       "website": "https://www.aveusmed.com",
-      "flag": "\ud83c\udf10"
+      "flag": "🌐"
     },
     {
       "id": "trader-jumper",
@@ -369,7 +375,7 @@
       "phone": "+971 4 881 2290",
       "email": "nadia.elsayed@jumpermed.com",
       "website": "https://www.jumpermed.com",
-      "flag": "\ud83c\udf10"
+      "flag": "🌐"
     }
   ],
   "products": [
@@ -477,7 +483,7 @@
       "reviewsCount": 9,
       "shortDesc": "Manual gynecology examination couch with adjustable leg rests, integrated foot step, sturdy steel frame, and seamless medical-grade upholstery.",
       "description": "Manual Gynecology Examination Couch with Adjustable Leg Rest &amp; Foot Step The Gynecological Examination Table is designed for gynecological examinations and routine clinical procedures in hospitals, medical centers, and women's healthcare clinics.",
-      "fullHtmlDesc": "Manual Gynecology Examination Couch with Adjustable Leg Rest &amp; Foot Step\u00a0<br /><div>The Gynecological Examination Table is designed for gynecological examinations and routine clinical procedures in hospitals, medical centers, and women's healthcare clinics.",
+      "fullHtmlDesc": "Manual Gynecology Examination Couch with Adjustable Leg Rest &amp; Foot Step <br /><div>The Gynecological Examination Table is designed for gynecological examinations and routine clinical procedures in hospitals, medical centers, and women's healthcare clinics.",
       "specifications": {
         "Adjustment Type": "Manual Ratchet & Gas Spring Assisted",
         "Frame Construction": "Heavy-gauge epoxy powder-coated steel chassis",
@@ -498,8 +504,8 @@
     {
       "id": "basco-india-cryo-004-deluxe-cryosurgical-system",
       "sku": "FOM-1791359178225",
-      "title": "Basco India BASCO-CRYOS Cryosurgical System \u2013 CRYO 004 Deluxe / 004B Super Deluxe",
-      "name": "Basco India BASCO-CRYOS Cryosurgical System \u2013 CRYO 004 Deluxe / 004B Super Deluxe",
+      "title": "Basco India BASCO-CRYOS Cryosurgical System – CRYO 004 Deluxe / 004B Super Deluxe",
+      "name": "Basco India BASCO-CRYOS Cryosurgical System – CRYO 004 Deluxe / 004B Super Deluxe",
       "slug": "basco-india-cryo-004-deluxe-cryosurgical-system-for-gynaecology-general-surgery-ent-dermatology",
       "brand": "Basco India",
       "brandId": "basco-india",
@@ -536,10 +542,10 @@
       "rating": 5,
       "reviewsCount": 11,
       "shortDesc": "Portable cryosurgical system for gynaecology, cervical cryo-ablation, ENT, and dermatology with instant ON-OFF gas-flow control and silencer.",
-      "description": "The Basco India BASCO-CRYOS Cryosurgical System is a portable cryosurgical system designed for use in Gynaecology, General Surgery, Otorhinolaryngology (ENT), and Dermatology. The system uses cryogenic gas and is designed to provide a convenient solution for cryosurgical procedures across multiple medical specialties. CRYO GYNIC The BASCO-CRYOS range includes the CRYO 004 Deluxe and CRYO 004B Super Deluxe configurations. Both are based on the same cryosurgical platform, while the CRYO 004B adds an ON-OFF control system that allows the gas flow to be stopped without closing the cylinder when changing the probe. CRYO GYNIC The system features high-quality hypodermic needles designed for smooth cryogenic gas flow, a specially designed silencer for quieter operation, an ABS plastic body, and interchangeable probes for different clinical applications. A lightweight carrying case also supports portability. CRYO GYNIC Key Features Portable cryosurgical system Suitable for Gynaecology, General Surgery, ENT and Dermatology Available in: CRYO 004 Deluxe CRYO 004B Super Deluxe Uses nitrous oxide (N\u2082O) according to the supplied brochure High-quality hypodermic needles Designed for smooth cryogenic gas flow Specially designed silencer for quieter operation Lightweight carrying case ABS plastic body Interchangeable special-purpose cryo probes Multiple probe options for different clinical specialties Optional ON-OFF control configuration 004B version provides ON-OFF gas-flow control Designed for convenient probe interchange and maintenance CRYO 004 Deluxe &amp; CRYO 004B Options The product is available in two configurations: Model Configuration Main Feature CRYO 004 Deluxe Deluxe Portable cryosurgical system with silencer CRYO 004B Super Deluxe Super Deluxe Adds ON-OFF gas-flow control",
-      "fullHtmlDesc": "<p>The Basco India BASCO-CRYOS Cryosurgical System is a portable cryosurgical system designed for use in Gynaecology, General Surgery, Otorhinolaryngology (ENT), and Dermatology. The system uses cryogenic gas and is designed to provide a convenient solution for cryosurgical procedures across multiple medical specialties.     CRYO GYNIC</p><p>The BASCO-CRYOS range includes the CRYO 004 Deluxe and CRYO 004B Super Deluxe configurations. Both are based on the same cryosurgical platform, while the CRYO 004B adds an ON-OFF control system that allows the gas flow to be stopped without closing the cylinder when changing the probe.     CRYO GYNIC</p><p>The system features high-quality hypodermic needles designed for smooth cryogenic gas flow, a specially designed silencer for quieter operation, an ABS plastic body, and interchangeable probes for different clinical applications. A lightweight carrying case also supports portability.     CRYO GYNIC</p><h2>Key Features</h2><ul><li>Portable cryosurgical system</li><li>Suitable for Gynaecology, General Surgery, ENT and Dermatology</li><li>Available in:<ul><li>CRYO 004 Deluxe</li><li>CRYO 004B Super Deluxe</li></ul></li><li>Uses <strong>nitrous oxide (N\u2082O)</strong> according to the supplied brochure</li><li>High-quality hypodermic needles</li><li>Designed for smooth cryogenic gas flow</li><li>Specially designed <strong>silencer</strong> for quieter operation</li><li>Lightweight carrying case</li><li>ABS plastic body</li><li>Interchangeable special-purpose cryo probes</li><li>Multiple probe options for different clinical specialties</li><li>Optional ON-OFF control configuration</li><li>004B version provides <strong>ON-OFF gas-flow control</strong></li><li>Designed for convenient probe interchange and maintenance</li></ul><h2>CRYO 004 Deluxe &amp; CRYO 004B Options</h2><p>The product is available in two configurations:</p><div><table><thead><tr><th>Model</th><th>Configuration</th><th>Main Feature</th></tr></thead><tbody><tr><td><strong>CRYO 004 Deluxe</strong></td><td>Deluxe</td><td>Portable cryosurgical system with silencer</td></tr><tr><td><strong>CRYO 004B Super Deluxe</strong></td><td>Super Deluxe</td><td>Adds ON-OFF gas-flow control</td></tr></tbody></table>",
+      "description": "The Basco India BASCO-CRYOS Cryosurgical System is a portable cryosurgical system designed for use in Gynaecology, General Surgery, Otorhinolaryngology (ENT), and Dermatology. The system uses cryogenic gas and is designed to provide a convenient solution for cryosurgical procedures across multiple medical specialties. CRYO GYNIC The BASCO-CRYOS range includes the CRYO 004 Deluxe and CRYO 004B Super Deluxe configurations. Both are based on the same cryosurgical platform, while the CRYO 004B adds an ON-OFF control system that allows the gas flow to be stopped without closing the cylinder when changing the probe. CRYO GYNIC The system features high-quality hypodermic needles designed for smooth cryogenic gas flow, a specially designed silencer for quieter operation, an ABS plastic body, and interchangeable probes for different clinical applications. A lightweight carrying case also supports portability. CRYO GYNIC Key Features Portable cryosurgical system Suitable for Gynaecology, General Surgery, ENT and Dermatology Available in: CRYO 004 Deluxe CRYO 004B Super Deluxe Uses nitrous oxide (N₂O) according to the supplied brochure High-quality hypodermic needles Designed for smooth cryogenic gas flow Specially designed silencer for quieter operation Lightweight carrying case ABS plastic body Interchangeable special-purpose cryo probes Multiple probe options for different clinical specialties Optional ON-OFF control configuration 004B version provides ON-OFF gas-flow control Designed for convenient probe interchange and maintenance CRYO 004 Deluxe &amp; CRYO 004B Options The product is available in two configurations: Model Configuration Main Feature CRYO 004 Deluxe Deluxe Portable cryosurgical system with silencer CRYO 004B Super Deluxe Super Deluxe Adds ON-OFF gas-flow control",
+      "fullHtmlDesc": "<p>The Basco India BASCO-CRYOS Cryosurgical System is a portable cryosurgical system designed for use in Gynaecology, General Surgery, Otorhinolaryngology (ENT), and Dermatology. The system uses cryogenic gas and is designed to provide a convenient solution for cryosurgical procedures across multiple medical specialties.     CRYO GYNIC</p><p>The BASCO-CRYOS range includes the CRYO 004 Deluxe and CRYO 004B Super Deluxe configurations. Both are based on the same cryosurgical platform, while the CRYO 004B adds an ON-OFF control system that allows the gas flow to be stopped without closing the cylinder when changing the probe.     CRYO GYNIC</p><p>The system features high-quality hypodermic needles designed for smooth cryogenic gas flow, a specially designed silencer for quieter operation, an ABS plastic body, and interchangeable probes for different clinical applications. A lightweight carrying case also supports portability.     CRYO GYNIC</p><h2>Key Features</h2><ul><li>Portable cryosurgical system</li><li>Suitable for Gynaecology, General Surgery, ENT and Dermatology</li><li>Available in:<ul><li>CRYO 004 Deluxe</li><li>CRYO 004B Super Deluxe</li></ul></li><li>Uses <strong>nitrous oxide (N₂O)</strong> according to the supplied brochure</li><li>High-quality hypodermic needles</li><li>Designed for smooth cryogenic gas flow</li><li>Specially designed <strong>silencer</strong> for quieter operation</li><li>Lightweight carrying case</li><li>ABS plastic body</li><li>Interchangeable special-purpose cryo probes</li><li>Multiple probe options for different clinical specialties</li><li>Optional ON-OFF control configuration</li><li>004B version provides <strong>ON-OFF gas-flow control</strong></li><li>Designed for convenient probe interchange and maintenance</li></ul><h2>CRYO 004 Deluxe &amp; CRYO 004B Options</h2><p>The product is available in two configurations:</p><div><table><thead><tr><th>Model</th><th>Configuration</th><th>Main Feature</th></tr></thead><tbody><tr><td><strong>CRYO 004 Deluxe</strong></td><td>Deluxe</td><td>Portable cryosurgical system with silencer</td></tr><tr><td><strong>CRYO 004B Super Deluxe</strong></td><td>Super Deluxe</td><td>Adds ON-OFF gas-flow control</td></tr></tbody></table>",
       "specifications": {
-        "Gas Type": "Nitrous Oxide (N\u2082O) or Medical Carbon Dioxide (CO\u2082)",
+        "Gas Type": "Nitrous Oxide (N₂O) or Medical Carbon Dioxide (CO₂)",
         "Flow Control": "Instant ON-OFF toggle valve without closing cylinder (004B)",
         "Needles & Flow": "High-grade hypodermic needles ensuring non-clogging gas flow",
         "Exhaust Silencer": "Specially engineered acoustic muffler for quiet clinical operation",
@@ -558,8 +564,8 @@
     {
       "id": "askir-c30-professional-electric-surgical-suction-machine-ca-mi",
       "sku": "woo-16014",
-      "title": "Askir C30 Professional Electric Surgical Suction Machine \u2013 CA-MI",
-      "name": "Askir C30 Professional Electric Surgical Suction Machine \u2013 CA-MI",
+      "title": "Askir C30 Professional Electric Surgical Suction Machine – CA-MI",
+      "name": "Askir C30 Professional Electric Surgical Suction Machine – CA-MI",
       "slug": "askir-c30-professional-electric-surgical-suction-machine-ca-mi",
       "brand": "CAMI Italy",
       "brandId": "cami-italy",
@@ -612,7 +618,7 @@
       "features": [
         "Maintenance-free piston motor engineered for non-stop continuous hospital duty",
         "High-capacity 40 L/min suction for gynecology, obstetrics, and minor OT procedures",
-        "Autoclavable 121\u00b0C polycarbonate collection jars with mechanical overflow protection",
+        "Autoclavable 121°C polycarbonate collection jars with mechanical overflow protection",
         "Smooth 5-castor mobile base for quick repositioning between examination rooms"
       ],
       "createdAt": "2026-10-14T07:47:00.457Z"
@@ -660,11 +666,11 @@
       "reviewsCount": 22,
       "shortDesc": "Advanced digital video colposcope with LED cold light, electronic green filter, autofocus, DICOM 3.0, and integrated cervical analysis software.",
       "description": "EDAN C6A Video Colposcope is a video colposcope designed for detailed cervical examination and colposcopic assessment. It combines a high-resolution camera, LED cold lighting system, electronic green filter, and fast autofocus to provide clear images during examination. The C6A supports real-time image display, image capture, zoom control, and angle adjustment. Its electronic green filter helps enhance vascular details, while acetic acid and iodine reaction timers support the examination process. The system also includes patient management software for entering patient information, capturing and reviewing images, analyzing colposcopic findings, and exporting examination reports in PDF format. It supports DICOM 3.0 for medical image management. Key Features LED cold lighting system High-resolution camera Fast autofocus system Electronic green filter Real-time display of magnified images Remote image capture control Adjustable viewing angle Zoom in/out control Acetic acid and iodine reaction timers Colposcopic findings gallery Patient management software Image capture and comparison PDF report export DICOM 3.0 support USB and S-Video connectivity",
-      "fullHtmlDesc": "<p><strong>EDAN C6A Video Colposcope</strong> is a video colposcope designed for detailed cervical examination and colposcopic assessment. It combines a high-resolution camera, LED cold lighting system, electronic green filter, and fast autofocus to provide clear images during examination.<span></span></p>\n<p>The C6A supports real-time image display, image capture, zoom control, and angle adjustment. Its electronic green filter helps enhance vascular details, while acetic acid and iodine reaction timers support the examination process.</p>\n<p>The system also includes patient management software for entering patient information, capturing and reviewing images, analyzing colposcopic findings, and exporting examination reports in PDF format. It supports <strong>DICOM 3.0</strong> for medical image management.</p>\n<h3>\u00a0Key Features</h3>\n<ul>\n<li>\nLED cold lighting system\n</li>\n<li>\nHigh-resolution camera\n</li>\n<li>\nFast autofocus system\n</li>\n<li>\nElectronic green filter\n</li>\n<li>\nReal-time display of magnified images\n</li>\n<li>\nRemote image capture control\n</li>\n<li>\nAdjustable viewing angle\n</li>\n<li>\nZoom in/out control\n</li>\n<li>\nAcetic acid and iodine reaction timers\n</li>\n<li>\nColposcopic findings gallery\n</li>\n<li>\nPatient management software\n</li>\n<li>\nImage capture and comparison\n</li>\n<li>\nPDF report export\n</li>\n<li>\nDICOM 3.0 support\n</li>\n<li>\nUSB and S-Video connectivity</li></ul>",
+      "fullHtmlDesc": "<p><strong>EDAN C6A Video Colposcope</strong> is a video colposcope designed for detailed cervical examination and colposcopic assessment. It combines a high-resolution camera, LED cold lighting system, electronic green filter, and fast autofocus to provide clear images during examination.<span></span></p>\n<p>The C6A supports real-time image display, image capture, zoom control, and angle adjustment. Its electronic green filter helps enhance vascular details, while acetic acid and iodine reaction timers support the examination process.</p>\n<p>The system also includes patient management software for entering patient information, capturing and reviewing images, analyzing colposcopic findings, and exporting examination reports in PDF format. It supports <strong>DICOM 3.0</strong> for medical image management.</p>\n<h3> Key Features</h3>\n<ul>\n<li>\nLED cold lighting system\n</li>\n<li>\nHigh-resolution camera\n</li>\n<li>\nFast autofocus system\n</li>\n<li>\nElectronic green filter\n</li>\n<li>\nReal-time display of magnified images\n</li>\n<li>\nRemote image capture control\n</li>\n<li>\nAdjustable viewing angle\n</li>\n<li>\nZoom in/out control\n</li>\n<li>\nAcetic acid and iodine reaction timers\n</li>\n<li>\nColposcopic findings gallery\n</li>\n<li>\nPatient management software\n</li>\n<li>\nImage capture and comparison\n</li>\n<li>\nPDF report export\n</li>\n<li>\nDICOM 3.0 support\n</li>\n<li>\nUSB and S-Video connectivity</li></ul>",
       "specifications": {
         "Optical System": "High-sensitivity color CCD / CMOS sensor with ultra-fast autofocus",
         "Magnification": "1x - 36x optical and digital continuous magnification",
-        "Illumination": "Circular LED cold light source (\u22652,500 Lux at 300mm)",
+        "Illumination": "Circular LED cold light source (≥2,500 Lux at 300mm)",
         "Vascular Filter": "Triple-grade electronic green filter for micro-vascular visualization",
         "Timers": "Integrated digital timers for Acetic Acid and Lugols Iodine reactions",
         "Software Suite": "Patient case management, image comparison, RCI scoring & PDF report export",
@@ -682,8 +688,8 @@
     {
       "id": "tsunlandscope-portable-electronic",
       "sku": "FOM-1791093205295",
-      "title": "SunlandScope\u2122 Portable Electronic Colposcope",
-      "name": "SunlandScope\u2122 Portable Electronic Colposcope",
+      "title": "SunlandScope™ Portable Electronic Colposcope",
+      "name": "SunlandScope™ Portable Electronic Colposcope",
       "slug": "tsunlandscope-portable-electronic",
       "brand": "Sunland Medical",
       "brandId": "sunland-medical",
@@ -720,14 +726,14 @@
       "rating": 5,
       "reviewsCount": 15,
       "shortDesc": "Compact 8MP portable digital colposcope with Wi-Fi & USB connectivity, 8-hour battery, and compatibility with iOS, Android, and PC.",
-      "description": "SunlandScope\u2122 Portable Electronic Colposcope is a compact and lightweight digital colposcope designed for gynecological examinations, cervical screening, clinical visualization, and image documentation. With an 8MP high-definition camera , the device provides clear and detailed images that can be viewed in real time on a computer, tablet, or smartphone . It supports both USB and Wi-Fi connectivity , making it convenient for use in different clinical environments. Its portable design allows healthcare professionals to easily move the device between examination rooms or different healthcare locations. The system also supports digital image capture and one-click reporting, helping with examination documentation and patient records. The SunlandScope can be used with compatible disposable sterile vaginal speculums, available in 2-wing and 4-wing configurations for different examination requirements. Key Features 8MP high-definition imaging Portable and lightweight design USB and Wi-Fi connectivity Real-time image transfer Clear image and high-color rendering Compatible with PC, tablet and smartphone Up to 8 hours operating time USB Type-C charging One-click report generation Compatible with disposable sterile speculums Suitable for routine gynecological examinations and screening Use Cases Gynecological examinations Cervical screening Women's health clinics Gynecology departments Outpatient clinics Hospital examination rooms Gynecological consultation and documentation Remote image sharing and consultation Ideal For Gynecology Clinics | Hospitals | Medical Centers | Women's Health Centers | Cervical Screening Centers | OB-GYN Departments | Outpatient Departments Product Specifications Specification Details Camera 8MP Dimensions 155 \u00d7 40 \u00d7 42 mm Weight \u2264115 g Connectivity USB / Wi-Fi Charging USB Type-C Runtime Up to 8 hours Standby Time Up to 30 hours Working Distance 100 \u00b1 20 mm Compatible Devices PC / Tablet / Smartphone",
-      "fullHtmlDesc": "<p><b>SunlandScope\u2122 Portable Electronic Colposcope</b> is a compact and lightweight digital colposcope designed for gynecological examinations, cervical screening, clinical visualization, and image documentation.</p><p>With an <b>8MP high-definition camera</b>, the device provides clear and detailed images that can be <b>viewed in real time on a computer, tablet, or smartphone</b>. It supports both <b>USB and Wi-Fi connectivity</b>, making it convenient for use in different clinical environments.</p><p>Its portable design allows healthcare professionals to easily move the device between examination rooms or different healthcare locations. The system also supports digital image capture and one-click reporting, helping with examination documentation and patient records.</p><p>The SunlandScope can be used with compatible disposable sterile vaginal speculums, available in <b>2-wing and 4-wing configurations</b> for different examination requirements.</p><p><b><br /></b></p><p><b>Key Features</b></p><ul><li>8MP high-definition imaging</li><li>Portable and lightweight design</li><li>USB and Wi-Fi connectivity</li><li>Real-time image transfer</li><li>Clear image and high-color rendering</li><li>Compatible with PC, tablet and smartphone</li><li>Up to 8 hours operating time</li><li>USB Type-C charging</li><li>One-click report generation</li><li>Compatible with disposable sterile speculums</li><li>Suitable for routine gynecological examinations and screening</li></ul><p><b>Use Cases</b></p><ul><li><b>Gynecological examinations</b></li><li>Cervical screening</li><li>Women's health clinics</li><li>Gynecology departments</li><li>Outpatient clinics</li><li>Hospital examination rooms</li><li>Gynecological consultation and documentation</li><li>Remote image sharing and consultation<br /><br /></li></ul><p><b>Ideal For</b></p><p>Gynecology Clinics | Hospitals | Medical Centers | Women's Health Centers | Cervical Screening Centers | OB-GYN Departments | Outpatient Departments</p><p><b><br /></b></p><p><b>Product Specifications</b></p><p>Specification<span>\t</span>Details</p><p>Camera<span>\t</span>8MP</p><p>Dimensions<span>\t</span>155 \u00d7 40 \u00d7 42 mm</p><p>Weight<span>\t</span>\u2264115 g</p><p>Connectivity<span>\t</span>USB / Wi-Fi</p><p>Charging<span>\t</span>USB Type-C</p><p>Runtime<span>\t</span>Up to 8 hours</p><p>Standby Time<span>\t</span>Up to 30 hours</p><p>Working Distance<span>\t</span>100 \u00b1 20 mm</p><p>Compatible Devices<span>\t</span>PC / Tablet / Smartphone</p><div><br />",
+      "description": "SunlandScope™ Portable Electronic Colposcope is a compact and lightweight digital colposcope designed for gynecological examinations, cervical screening, clinical visualization, and image documentation. With an 8MP high-definition camera , the device provides clear and detailed images that can be viewed in real time on a computer, tablet, or smartphone . It supports both USB and Wi-Fi connectivity , making it convenient for use in different clinical environments. Its portable design allows healthcare professionals to easily move the device between examination rooms or different healthcare locations. The system also supports digital image capture and one-click reporting, helping with examination documentation and patient records. The SunlandScope can be used with compatible disposable sterile vaginal speculums, available in 2-wing and 4-wing configurations for different examination requirements. Key Features 8MP high-definition imaging Portable and lightweight design USB and Wi-Fi connectivity Real-time image transfer Clear image and high-color rendering Compatible with PC, tablet and smartphone Up to 8 hours operating time USB Type-C charging One-click report generation Compatible with disposable sterile speculums Suitable for routine gynecological examinations and screening Use Cases Gynecological examinations Cervical screening Women's health clinics Gynecology departments Outpatient clinics Hospital examination rooms Gynecological consultation and documentation Remote image sharing and consultation Ideal For Gynecology Clinics | Hospitals | Medical Centers | Women's Health Centers | Cervical Screening Centers | OB-GYN Departments | Outpatient Departments Product Specifications Specification Details Camera 8MP Dimensions 155 × 40 × 42 mm Weight ≤115 g Connectivity USB / Wi-Fi Charging USB Type-C Runtime Up to 8 hours Standby Time Up to 30 hours Working Distance 100 ± 20 mm Compatible Devices PC / Tablet / Smartphone",
+      "fullHtmlDesc": "<p><b>SunlandScope™ Portable Electronic Colposcope</b> is a compact and lightweight digital colposcope designed for gynecological examinations, cervical screening, clinical visualization, and image documentation.</p><p>With an <b>8MP high-definition camera</b>, the device provides clear and detailed images that can be <b>viewed in real time on a computer, tablet, or smartphone</b>. It supports both <b>USB and Wi-Fi connectivity</b>, making it convenient for use in different clinical environments.</p><p>Its portable design allows healthcare professionals to easily move the device between examination rooms or different healthcare locations. The system also supports digital image capture and one-click reporting, helping with examination documentation and patient records.</p><p>The SunlandScope can be used with compatible disposable sterile vaginal speculums, available in <b>2-wing and 4-wing configurations</b> for different examination requirements.</p><p><b><br /></b></p><p><b>Key Features</b></p><ul><li>8MP high-definition imaging</li><li>Portable and lightweight design</li><li>USB and Wi-Fi connectivity</li><li>Real-time image transfer</li><li>Clear image and high-color rendering</li><li>Compatible with PC, tablet and smartphone</li><li>Up to 8 hours operating time</li><li>USB Type-C charging</li><li>One-click report generation</li><li>Compatible with disposable sterile speculums</li><li>Suitable for routine gynecological examinations and screening</li></ul><p><b>Use Cases</b></p><ul><li><b>Gynecological examinations</b></li><li>Cervical screening</li><li>Women's health clinics</li><li>Gynecology departments</li><li>Outpatient clinics</li><li>Hospital examination rooms</li><li>Gynecological consultation and documentation</li><li>Remote image sharing and consultation<br /><br /></li></ul><p><b>Ideal For</b></p><p>Gynecology Clinics | Hospitals | Medical Centers | Women's Health Centers | Cervical Screening Centers | OB-GYN Departments | Outpatient Departments</p><p><b><br /></b></p><p><b>Product Specifications</b></p><p>Specification<span>\t</span>Details</p><p>Camera<span>\t</span>8MP</p><p>Dimensions<span>\t</span>155 × 40 × 42 mm</p><p>Weight<span>\t</span>≤115 g</p><p>Connectivity<span>\t</span>USB / Wi-Fi</p><p>Charging<span>\t</span>USB Type-C</p><p>Runtime<span>\t</span>Up to 8 hours</p><p>Standby Time<span>\t</span>Up to 30 hours</p><p>Working Distance<span>\t</span>100 ± 20 mm</p><p>Compatible Devices<span>\t</span>PC / Tablet / Smartphone</p><div><br />",
       "specifications": {
         "Camera Resolution": "8 Megapixels Ultra HD clinical sensor",
         "Connectivity": "Dual-band Wi-Fi & High-speed USB Type-C",
-        "Dimensions & Weight": "155 \u00d7 40 \u00d7 42 mm | \u2264 115 grams (Pocket-sized)",
+        "Dimensions & Weight": "155 × 40 × 42 mm | ≤ 115 grams (Pocket-sized)",
         "Battery Life": "Up to 8 hours continuous clinical runtime (30h standby)",
-        "Working Distance": "100 \u00b1 20 mm",
+        "Working Distance": "100 ± 20 mm",
         "Compatible Platforms": "PC (Windows/Mac), iPad/iOS, and Android tablets & phones",
         "Speculum System": "Compatible with 2-wing and 4-wing disposable sterile speculums",
         "Documentation": "One-touch photo/video capture and instant PDF patient reporting"
@@ -784,7 +790,7 @@
       "description": "AVEUS AV-Classic 3 Fetal Monitor is a compact and advanced cardiotocography (CTG) system designed for accurate monitoring of fetal heart rate and uterine contractions, ensuring safe and reliable prenatal and labor care.",
       "fullHtmlDesc": "AVEUS AV-Classic 3 Fetal Monitor is a compact and advanced cardiotocography (CTG) system designed for accurate monitoring of fetal heart rate and uterine contractions, ensuring safe and reliable prenatal and labor care.",
       "specifications": {
-        "Display": "Tiltable High-Resolution Color TFT LCD Screen (0 - 60\u00b0)",
+        "Display": "Tiltable High-Resolution Color TFT LCD Screen (0 - 60°)",
         "Parameters": "FHR1, FHR2 (Twins option), TOCO, AFM, Automatic & Manual Fetal Movement",
         "Transducer": "12-crystal 1.0 MHz pulsed Doppler wide-beam ultrasound transducer",
         "Thermal Printer": "Built-in wide-format thermal recorder (112mm / 152mm)",
@@ -842,12 +848,12 @@
       "rating": 5,
       "reviewsCount": 38,
       "shortDesc": "Compact fetal doppler with TFT color display, real-time FHR waveform graph, 2.5 MHz waterproof ultrasound probe, and loud built-in speaker.",
-      "description": "The Jumper JPD-100E Fetal Doppler is a medical device designed for real-time fetal heart rate monitoring during pregnancy. It features a TFT display that presents fetal heart rate information and waveform data, helping healthcare professionals assess fetal heart activity during prenatal examinations. The device uses a 2.5 MHz ultrasound probe and supports a fetal heart rate measurement range of 50\u2013210 beats per minute (BPM), with a stated accuracy of \u00b12 BPM. It also features adjustable volume, battery status indication, and automatic power-off after one minute of inactivity. The Jumper JPD-100E Fetal Doppler is suitable for use in maternity clinics, hospitals, and other healthcare settings as part of prenatal assessment. Contact FastonMed for product details, availability, and purchasing enquiries.",
-      "fullHtmlDesc": "<p>The Jumper JPD-100E Fetal Doppler is a medical device designed for real-time fetal heart rate monitoring during pregnancy. It features a TFT display that presents fetal heart rate information and waveform data, helping healthcare professionals assess fetal heart activity during prenatal examinations.</p><p>The device uses a 2.5 MHz ultrasound probe and supports a fetal heart rate measurement range of 50\u2013210 beats per minute (BPM), with a stated accuracy of \u00b12 BPM. It also features adjustable volume, battery status indication, and automatic power-off after one minute of inactivity.</p><p>The Jumper JPD-100E Fetal Doppler is suitable for use in maternity clinics, hospitals, and other healthcare settings as part of prenatal assessment.<br /></p><p>Contact FastonMed for product details, availability, and purchasing enquiries.</p>",
+      "description": "The Jumper JPD-100E Fetal Doppler is a medical device designed for real-time fetal heart rate monitoring during pregnancy. It features a TFT display that presents fetal heart rate information and waveform data, helping healthcare professionals assess fetal heart activity during prenatal examinations. The device uses a 2.5 MHz ultrasound probe and supports a fetal heart rate measurement range of 50–210 beats per minute (BPM), with a stated accuracy of ±2 BPM. It also features adjustable volume, battery status indication, and automatic power-off after one minute of inactivity. The Jumper JPD-100E Fetal Doppler is suitable for use in maternity clinics, hospitals, and other healthcare settings as part of prenatal assessment. Contact FastonMed for product details, availability, and purchasing enquiries.",
+      "fullHtmlDesc": "<p>The Jumper JPD-100E Fetal Doppler is a medical device designed for real-time fetal heart rate monitoring during pregnancy. It features a TFT display that presents fetal heart rate information and waveform data, helping healthcare professionals assess fetal heart activity during prenatal examinations.</p><p>The device uses a 2.5 MHz ultrasound probe and supports a fetal heart rate measurement range of 50–210 beats per minute (BPM), with a stated accuracy of ±2 BPM. It also features adjustable volume, battery status indication, and automatic power-off after one minute of inactivity.</p><p>The Jumper JPD-100E Fetal Doppler is suitable for use in maternity clinics, hospitals, and other healthcare settings as part of prenatal assessment.<br /></p><p>Contact FastonMed for product details, availability, and purchasing enquiries.</p>",
       "specifications": {
         "Display": "Color TFT display showing FHR numeric value, curve graph, and battery gauge",
         "Probe": "2.5 MHz waterproof high-sensitivity interchangeable ultrasound transducer",
-        "Measurement Range": "50 - 210 BPM (Accuracy: \u00b12 BPM)",
+        "Measurement Range": "50 - 210 BPM (Accuracy: ±2 BPM)",
         "Modes": "Real-time FHR mode, Averaged FHR mode, and Manual counting mode",
         "Audio": "Built-in hi-fi speaker with volume wheel + 3.5mm stereo headphone output",
         "Power Conservation": "Intelligent auto power-off after 1 minute of non-use",
@@ -907,11 +913,11 @@
       "description": "The Surtron 80 Electrosurgical Unit delivers precise and reliable surgical performance for light and medium procedures. It supports pure CUT, BLEND, FORCED COAG, SOFT COAG, and BIPOLAR modes with advanced microcontroller monitoring. Designed with surgeon-friendly controls, real-time safety monitoring, and high accuracy, it ensures smooth and efficient operation in clinics and surgical environments.",
       "fullHtmlDesc": "The Surtron 80 Electrosurgical Unit delivers precise and reliable surgical performance for light and medium procedures. It supports pure CUT, BLEND, FORCED COAG, SOFT COAG, and BIPOLAR modes with advanced microcontroller monitoring. Designed with surgeon-friendly controls, real-time safety monitoring, and high accuracy, it ensures smooth and efficient operation in clinics and surgical environments.",
       "specifications": {
-        "Max Pure CUT Power": "80 W - 400 \u03a9",
-        "Max BLEND Power": "60 W - 400 \u03a9",
-        "Max FORCED COAG": "50 W - 400 \u03a9",
-        "Max SOFT COAG": "40 W - 400 \u03a9",
-        "Max BIPOLAR Power": "30 W - 120 \u03a9",
+        "Max Pure CUT Power": "80 W - 400 Ω",
+        "Max BLEND Power": "60 W - 400 Ω",
+        "Max FORCED COAG": "50 W - 400 Ω",
+        "Max SOFT COAG": "40 W - 400 Ω",
+        "Max BIPOLAR Power": "30 W - 120 Ω",
         "Working Frequency": "600 kHz",
         "Patient Plate Monitoring": "Continuous skin-plate contact safety circuit",
         "Chassis & Controls": "Surgeon-friendly digital LED display with finger-switch handpiece",
@@ -924,6 +930,42 @@
         "Complete set of autoclavable gynecological electrodes, handpiece, and foot pedal included"
       ],
       "createdAt": "2026-10-14T07:47:00.457Z"
+    },
+    {
+      "id": "ge-voluson-e10-expert",
+      "slug": "ge-voluson-e10-expert",
+      "sku": "GE-VOLUSON-E10-EXPERT",
+      "title": "Voluson E10 Expert 4D/5D",
+      "name": "Voluson E10 Expert 4D/5D",
+      "brand": "GE HealthCare",
+      "categoryId": "ultrasound",
+      "categoryName": "Ultrasound & Fetal Imaging",
+      "image": "/assets/products/ultrasound_vignette.png",
+      "callForPrice": true,
+      "price": 0,
+      "inStock": false,
+      "features": [],
+      "specifications": {},
+      "shortDesc": "Contact our team for model details, configuration, availability and a quotation.",
+      "description": "Contact our team to confirm technical specifications, available configurations and delivery for this equipment."
+    },
+    {
+      "id": "medical-ventilator",
+      "slug": "medical-ventilator",
+      "sku": "MEDICAL-VENTILATOR",
+      "title": "Hospital ICU Ventilator",
+      "name": "Hospital ICU Ventilator",
+      "brand": "",
+      "categoryId": "critical-care",
+      "categoryName": "Critical Care Equipment",
+      "image": "/assets/products/ventilator.png",
+      "callForPrice": true,
+      "price": 0,
+      "inStock": false,
+      "features": [],
+      "specifications": {},
+      "shortDesc": "Contact our team for model details, configuration, availability and a quotation.",
+      "description": "Contact our team to confirm technical specifications, available configurations and delivery for this equipment."
     }
   ],
   "organisations": [],
