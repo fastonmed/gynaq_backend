@@ -1,6 +1,6 @@
 import http from 'node:http';
 import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
-import { readFile, writeFile, stat, copyFile, rename } from 'node:fs/promises';
+import { readFile, writeFile, stat, copyFile, rename, readdir, realpath } from 'node:fs/promises';
 import { existsSync, mkdirSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 
@@ -94,6 +94,7 @@ function sendJson(res, statusCode, data) {
   res.end(JSON.stringify(data));
 }
 
+let storagePauseUntil = 0;
 const sessions = new Map();
 const loginAttempts = new Map();
 const allowedOrigins = new Set(['https://www.gynaeq.com', 'https://gynaeq.com']);
@@ -167,6 +168,7 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 200, { success: true });
       }
       const isAdmin = authenticated(req);
+      if (Date.now() < storagePauseUntil && !['GET', 'HEAD'].includes(req.method) && pathname !== '/api/admin/storage/prepare') return sendJson(res, 503, { error: 'Storage maintenance is in progress. Please retry shortly.' });
       if (!['GET', 'HEAD'].includes(req.method) && !(req.method === 'POST' && pathname === '/api/enquiries') && !isAdmin) {
         return sendJson(res, 401, { error: 'Sign in as administrator to make changes.' });
       }
@@ -182,6 +184,39 @@ const server = http.createServer(async (req, res) => {
       // Website console resources. All administrative reads and writes require a session.
       if (pathname.startsWith('/api/admin/')) {
         if (!isAdmin) return sendJson(res, 401, { error: 'Administrator sign-in required.' });
+        if (pathname === '/api/admin/storage/prepare' && req.method === 'POST') {
+          const destination = '/home/u538435311/domains/api.gynaeq.com/gynaeq-data';
+          // Copy only this application's data to its permanent private directory. Never overwrite a different database.
+          storagePauseUntil = Date.now() + 300000;
+          try {
+            mkdirSync(destination, { recursive: true });
+            const resolved = await realpath(destination);
+            if (resolved !== destination) throw new Error('Storage directory must not be a symlink.');
+            const probe = join(destination, '.write-probe-' + randomBytes(6).toString('hex'));
+            await writeFile(probe, 'GYNAEQ storage validation', { flag: 'wx' });
+            await (await import('node:fs/promises')).unlink(probe);
+            const source = await readFile(DB_FILE);
+            const hash = buffer => createHash('sha256').update(buffer).digest('hex');
+            const targetFile = join(destination, 'gynaeq-db.json');
+            if (existsSync(targetFile)) {
+              if (hash(await readFile(targetFile)) !== hash(source)) throw new Error('Destination contains a different database. No files were replaced.');
+            } else await writeFile(targetFile, source, { flag: 'wx', mode: 0o600 });
+            let files = 0;
+            if (existsSync(join(DATA_DIR, 'uploads'))) {
+              mkdirSync(join(destination, 'uploads'), { recursive: true });
+              for (const name of await readdir(join(DATA_DIR, 'uploads'))) {
+                if (!/^[a-f0-9]{24}\.(png|jpg|webp|gif)$/.test(name)) continue;
+                const image = await readFile(join(DATA_DIR, 'uploads', name));
+                const target = join(destination, 'uploads', name);
+                if (!existsSync(target)) await writeFile(target, image, { flag: 'wx' });
+                if (hash(await readFile(target)) !== hash(image)) throw new Error('Uploaded image checksum mismatch.');
+                files++;
+              }
+            }
+            if (hash(await readFile(targetFile)) !== hash(source)) throw new Error('Database checksum mismatch.');
+            return sendJson(res, 200, { ready: true, directory: resolved, writable: true, databaseChecksum: hash(source), products: JSON.parse(source).products?.length || 0, uploadsVerified: files, writesPausedSeconds: 300 });
+          } catch (error) { storagePauseUntil = 0; throw error; }
+        }
         if (pathname === '/api/admin/backup') {
           if (req.method === 'GET') return sendJson(res, 200, await readDb());
           if (req.method === 'POST') {
