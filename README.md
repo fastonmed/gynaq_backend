@@ -19,3 +19,11 @@ Before public deployment, add authentication and authorization to administrative
 ## Administrator access
 
 Set `ADMIN_EMAIL=fastonmed@gmail.com` and a strong `ADMIN_PASSWORD` in Hostinger Node.js environment variables. Without a configured password, sign-in stays disabled and administrative writes return 401. Sessions last eight hours and expire when the server restarts. Public visitors can read the catalog and submit enquiries; other writes and private CRM data require sign-in.
+
+## Website console
+
+The website console manages products, inventory, categories, brands, media, enquiries, blog posts, pages, FAQs, reviews, site navigation, contact details and page SEO. `/api/admin/resources/*` and backups require an administrator session. `/api/content` only returns published editorial content.
+
+Set `DATA_DIR` to a permanent absolute directory outside the deployment root in production. The JSON database and uploaded image files live there. The seed remains in the repository and is copied only when no runtime database exists. Writes use an atomic file rename. A single Node.js process is required for this JSON storage implementation. Uploaded raster images are limited to 1.5 MB and served from `/api/media/`.
+
+Run `npm test` for isolated integration checks.

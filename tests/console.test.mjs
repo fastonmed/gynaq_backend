@@ -1,0 +1,83 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import { mkdtemp, mkdir, copyFile, rm } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const backend = dirname(dirname(fileURLToPath(import.meta.url)));
+
+test('console saves products and content while keeping drafts and private records protected', async () => {
+  const temp = await mkdtemp('/tmp/gynaeq-console-test-');
+  await mkdir(join(temp, 'data'));
+  await copyFile(join(backend, 'data/seed-data.json'), join(temp, 'data/seed-data.json'));
+  const port = 4300 + Math.floor(Math.random() * 1000);
+  const child = spawn(process.execPath, [join(backend, 'server.mjs')], { cwd: temp, env: { ...process.env, PORT: String(port), PUBLIC_DIR: join(temp, 'public'), ADMIN_PASSWORD: 'test-only-password', ADMIN_EMAIL: 'admin@example.test' }, stdio: ['ignore', 'pipe', 'pipe'] });
+  let cookie = '';
+  const request = async (path, method = 'GET', data, auth = true) => {
+    const response = await fetch(`http://127.0.0.1:${port}${path}`, { method, headers: { 'Content-Type': 'application/json', ...(auth && cookie ? { Cookie: cookie } : {}) }, ...(data === undefined ? {} : { body: JSON.stringify(data) }) });
+    const body = await response.json();
+    return { response, body };
+  };
+  try {
+    await new Promise((resolve, reject) => { let output = ''; child.stdout.on('data', chunk => { output += chunk; if (output.includes('Server Live')) resolve(); }); child.once('error', reject); child.once('exit', code => reject(Error(`Server exited ${code}`))); setTimeout(() => reject(Error('Startup timed out')), 5000).unref(); });
+    let result = await request('/api/admin/resources/posts');
+    assert.equal(result.response.status, 401);
+    result = await request('/api/products', 'POST', { name: 'Denied' });
+    assert.equal(result.response.status, 401);
+    result = await request('/api/auth/login', 'POST', { email: 'admin@example.test', password: 'wrong' });
+    assert.equal(result.response.status, 401);
+    result = await request('/api/auth/login', 'POST', { email: 'admin@example.test', password: 'test-only-password' });
+    assert.equal(result.response.status, 200);
+    cookie = result.response.headers.get('set-cookie').split(';')[0];
+    const initial = (await request('/api/data')).body;
+    const count = initial.products.length;
+    result = await request('/api/products', 'POST', { name: 'Test product', sku: 'TEST-ONLY', price: 500, categoryId: initial.categories[0].id, category: initial.categories[0].name, brand: initial.brands[0].name, brandId: initial.brands[0].id, status: 'draft', inStockCount: 0, inStock: false, galleryImages: ['/assets/ultrasound.jpg'], seoTitle: 'Product SEO' });
+    assert.equal(result.response.status, 201);
+    const product = result.body.product;
+    assert.equal(product.inStockCount, 0);
+    assert.equal(product.categoryId, initial.categories[0].id);
+    assert.equal((await request('/api/data', 'GET', undefined, false)).body.products.length, count);
+    await request(`/api/products/${product.id}`, 'PUT', { status: 'published', inStock: true, inStockCount: 4 });
+    let publicData = (await request('/api/data', 'GET', undefined, false)).body;
+    assert.equal(publicData.products.length, count + 1);
+    assert.equal(publicData.products.find(p => p.id === product.id).purchaseCost, undefined);
+    assert.equal(publicData.enquiries, undefined);
+    result = await request('/api/admin/resources/posts', 'POST', { title: 'Test article', content: '# Article body', status: 'draft' });
+    assert.equal(result.response.status, 201);
+    const post = result.body.record;
+    assert.equal((await request('/api/content', 'GET', undefined, false)).body.posts.length, 0);
+    result = await request('/api/admin/resources/posts', 'POST', { title: 'Same slug', slug: post.slug, status: 'published' });
+    assert.equal(result.response.status, 409);
+    await request(`/api/admin/resources/posts/${post.id}`, 'PUT', { title: 'Test article', content: '# Article body', status: 'published', slug: post.slug });
+    assert.equal((await request('/api/content', 'GET', undefined, false)).body.posts[0].title, 'Test article');
+    result = await request('/api/admin/resources/pages', 'POST', { title: 'About us', content: 'Managed page content', targetPath: '/about', status: 'published' });
+    assert.equal(result.response.status, 201);
+    const pageId = result.body.record.id;
+    result = await request('/api/admin/resources/media', 'POST', { name: 'Dangerous', url: 'javascript:alert(1)' });
+    assert.equal(result.response.status, 400);
+    result = await request('/api/admin/resources/media', 'POST', { name: 'Uploaded pixel', url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWc8AAAAASUVORK5CYII=' });
+    assert.equal(result.response.status, 201);
+    const imageResponse = await fetch(result.body.record.url);
+    assert.equal(imageResponse.status, 200);
+    assert.equal(imageResponse.headers.get('content-type'), 'image/png');
+    result = await request('/api/admin/resources/media', 'POST', { name: 'Product image', url: '/assets/ultrasound.jpg', alt: 'Ultrasound' });
+    assert.equal(result.response.status, 201);
+    await request(`/api/admin/resources/media/${result.body.record.id}`, 'DELETE');
+    result = await request('/api/admin/resources/categories/' + initial.categories[0].id, 'DELETE');
+    assert.equal(result.response.status, 409);
+    result = await request('/api/admin/resources/settings', 'POST', { name: 'GYNAEQ Test', email: 'test@example.test' });
+    assert.equal(result.response.status, 201);
+    assert.equal((await request('/api/data')).body.company.name, 'GYNAEQ Test');
+    await request(`/api/products/${product.id}`, 'DELETE');
+    await request(`/api/admin/resources/posts/${post.id}`, 'DELETE');
+    await request(`/api/admin/resources/pages/${pageId}`, 'DELETE');
+    assert.equal((await request('/api/content', 'GET', undefined, false)).body.posts.length, 0);
+    await request('/api/auth/logout', 'POST', {});
+    assert.equal((await request('/api/admin/resources/posts')).response.status, 401);
+  } finally {
+    child.kill();
+    if (child.exitCode === null) await new Promise(resolve => child.once('exit', resolve));
+    await rm(temp, { recursive: true, force: true });
+  }
+});

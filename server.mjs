@@ -1,13 +1,13 @@
 import http from 'node:http';
 import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
-import { readFile, writeFile, stat, copyFile } from 'node:fs/promises';
+import { readFile, writeFile, stat, copyFile, rename } from 'node:fs/promises';
 import { existsSync, mkdirSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 
 const PORT = Number(process.env.PORT || 4000);
 const PUBLIC_DIR = process.env.PUBLIC_DIR || join(process.cwd(), '../frontend');
-const DATA_DIR = join(process.cwd(), 'data');
-const SEED_FILE = join(DATA_DIR, 'seed-data.json');
+const DATA_DIR = process.env.DATA_DIR || join(process.cwd(), 'data');
+const SEED_FILE = join(process.cwd(), 'data/seed-data.json');
 const DB_FILE = join(DATA_DIR, 'gynaeq-db.json');
 
 const MIME_TYPES = {
@@ -59,7 +59,9 @@ async function readDb() {
 }
 
 async function writeDb(data) {
-  await writeFile(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  const tempFile = DB_FILE + '.' + randomBytes(8).toString('hex') + '.tmp';
+  await writeFile(tempFile, JSON.stringify(data, null, 2), 'utf-8');
+  await rename(tempFile, DB_FILE);
 }
 
 function parseJsonBody(req) {
@@ -168,11 +170,112 @@ const server = http.createServer(async (req, res) => {
       if (!['GET', 'HEAD'].includes(req.method) && !(req.method === 'POST' && pathname === '/api/enquiries') && !isAdmin) {
         return sendJson(res, 401, { error: 'Sign in as administrator to make changes.' });
       }
+      // Uploaded image files are public; the upload operation itself is administrator-only.
+      if (req.method === 'GET' && /^\/api\/media\/[a-f0-9]{24}\.(png|jpg|webp|gif)$/.test(pathname)) {
+        const name = pathname.split('/').pop();
+        try {
+          const content = await readFile(join(DATA_DIR, 'uploads', name));
+          res.writeHead(200, { 'Content-Type': MIME_TYPES[extname(name)] || (name.endsWith('.gif') ? 'image/gif' : 'application/octet-stream'), 'Cache-Control': 'public, max-age=31536000, immutable', 'X-Content-Type-Options': 'nosniff' });
+          return res.end(content);
+        } catch { return sendJson(res, 404, { error: 'Image not found.' }); }
+      }
+      // Website console resources. All administrative reads and writes require a session.
+      if (pathname.startsWith('/api/admin/')) {
+        if (!isAdmin) return sendJson(res, 401, { error: 'Administrator sign-in required.' });
+        if (pathname === '/api/admin/backup') {
+          if (req.method === 'GET') return sendJson(res, 200, await readDb());
+          if (req.method === 'POST') {
+            const backup = await parseJsonBody(req);
+            if (!backup || typeof backup !== 'object' || !Array.isArray(backup.products) || !Array.isArray(backup.categories) || !Array.isArray(backup.brands)) return sendJson(res, 400, { error: 'Invalid GYNAEQ backup file.' });
+            const allowed = ['company','products','categories','brands','traderCompanies','organisations','enquiries','quotations','amcContracts','posts','postCategories','pages','media','faqs','reviews','siteChrome','settings','seo'];
+            const restored = Object.fromEntries(allowed.filter(key => backup[key] !== undefined).map(key => [key, backup[key]]));
+            if (allowed.some(key => key !== 'company' && restored[key] !== undefined && !Array.isArray(restored[key]))) return sendJson(res, 400, { error: 'Backup collections must be arrays.' });
+            await writeDb(restored);
+            return sendJson(res, 200, { success: true });
+          }
+          return sendJson(res, 405, { error: 'Method not allowed' });
+        }
+        const match = pathname.match(/^\/api\/admin\/resources\/(categories|brands|media|posts|postCategories|pages|faqs|reviews|siteChrome|settings|seo)(?:\/([^/]+))?$/);
+        if (!match) return sendJson(res, 404, { error: 'Resource not found' });
+        const [, collection, encodedId] = match;
+        const id = encodedId ? decodeURIComponent(encodedId) : null;
+        const db = await readDb();
+        const items = db[collection] || [];
+        if (req.method === 'GET') return sendJson(res, 200, { data: items });
+        if (req.method === 'DELETE' && id) {
+          if (['categories', 'brands'].includes(collection) && (db.products || []).some(p => collection === 'categories' ? p.categoryId === id : p.brandId === id)) {
+            return sendJson(res, 409, { error: 'Move products to another category or brand before deleting it.' });
+          }
+          db[collection] = items.filter(item => item.id !== id);
+          await writeDb(db);
+          return sendJson(res, 200, { success: true });
+        }
+        if (!['POST', 'PUT'].includes(req.method)) return sendJson(res, 405, { error: 'Method not allowed' });
+        const body = await parseJsonBody(req);
+        const fields = {
+          categories: ['name','slug','description','image','icon','color'],
+          postCategories: ['name','slug','description'],
+          brands: ['name','slug','description','image'],
+          media: ['name','url','alt','type'],
+          posts: ['title','slug','excerpt','content','category','tags','status','featuredImage','seoTitle','seoDescription','author','publishedAt'],
+          pages: ['title','slug','excerpt','content','status','featuredImage','seoTitle','seoDescription','targetPath'],
+          faqs: ['question','answer','status'], reviews: ['name','quote','rating','status'],
+          siteChrome: ['logo','phone','email','footerText','navigation'],
+          settings: ['name','email','phone','address','currency'],
+          seo: ['title','description','path']
+        }[collection];
+        const clean = Object.fromEntries(fields.filter(key => body[key] !== undefined).map(key => [key, body[key]]));
+        if (['posts','pages'].includes(collection)) {
+          if (!String(clean.title || '').trim()) return sendJson(res, 400, { error: 'A title is required.' });
+          clean.slug = String(clean.slug || clean.title).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '');
+          if (!clean.slug) return sendJson(res, 400, { error: 'Enter a valid URL slug.' });
+          if (items.some(item => item.slug === clean.slug && item.id !== id)) return sendJson(res, 409, { error: 'This URL slug is already in use.' });
+          if (!['draft','published'].includes(clean.status)) clean.status = 'draft';
+          if (clean.status === 'published') clean.publishedAt = clean.publishedAt || new Date().toISOString();
+        }
+        if (['categories','brands','media','postCategories'].includes(collection) && !String(clean.name || '').trim()) return sendJson(res, 400, { error: 'A name is required.' });
+        if (collection === 'media' && !/^(https:\/\/|\/(?!\/)|data:image\/(png|jpeg|webp|gif);base64,)/i.test(String(clean.url || ''))) return sendJson(res, 400, { error: 'Upload an image or use an HTTPS image URL.' });
+        if (collection === 'pages' && clean.targetPath && !['/about','/contact','/packages'].includes(clean.targetPath)) return sendJson(res, 400, { error: 'Select a supported core page.' });
+        if (collection === 'pages' && clean.targetPath && items.some(item => item.targetPath === clean.targetPath && item.id !== id)) return sendJson(res, 409, { error: 'This core page already has a managed entry. Edit that entry instead.' });
+        if (collection === 'media' && String(clean.url).startsWith('data:image/')) {
+          const image = clean.url.match(/^data:image\/(png|jpeg|webp|gif);base64,([A-Za-z0-9+/=]+)$/);
+          if (!image) return sendJson(res, 400, { error: 'Invalid image upload.' });
+          const bytes = Buffer.from(image[2], 'base64');
+          if (!bytes.length || bytes.length > 1572864) return sendJson(res, 400, { error: 'Images must be under 1.5 MB.' });
+          const valid = image[1] === 'png' ? bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) : image[1] === 'jpeg' ? bytes[0] === 255 && bytes[1] === 216 : image[1] === 'webp' ? bytes.toString('ascii',0,4) === 'RIFF' && bytes.toString('ascii',8,12) === 'WEBP' : bytes.toString('ascii',0,3) === 'GIF';
+          if (!valid) return sendJson(res, 400, { error: 'The file is not a valid supported image.' });
+          const file = randomBytes(12).toString('hex') + '.' + (image[1] === 'jpeg' ? 'jpg' : image[1]);
+          mkdirSync(join(DATA_DIR, 'uploads'), { recursive: true });
+          await writeFile(join(DATA_DIR, 'uploads', file), bytes);
+          const origin = String(req.headers.host).includes('gynaeq.com') ? 'https://api.gynaeq.com' : `http://${req.headers.host}`;
+          clean.url = origin + '/api/media/' + file;
+        }
+        if (id && !items.some(item => item.id === id)) return sendJson(res, 404, { error: 'Record not found.' });
+        const record = { ...(items.find(item => item.id === id) || {}), ...clean, id: id || randomBytes(12).toString('hex'), updatedAt: new Date().toISOString() };
+        db[collection] = id ? items.map(item => item.id === id ? record : item) : [...items, record];
+        if (collection === 'categories' && clean.description !== undefined) record.shortDesc = clean.description;
+        if (collection === 'settings') db.company = { ...(db.company || {}), ...clean };
+        // Keep product labels and filters aligned when a category or brand is renamed.
+        if (id && collection === 'categories') db.products = (db.products || []).map(p => p.categoryId === id ? { ...p, category: record.name, categoryName: record.name } : p);
+        if (id && collection === 'brands') db.products = (db.products || []).map(p => p.brandId === id ? { ...p, brand: record.name } : p);
+        await writeDb(db);
+        return sendJson(res, id ? 200 : 201, { success: true, record });
+      }
+      if (req.method === 'GET' && pathname === '/api/content') {
+        const db = await readDb();
+        return sendJson(res, 200, {
+          posts: (db.posts || []).filter(p => p.status === 'published'),
+          pages: (db.pages || []).filter(p => p.status === 'published'),
+          faqs: (db.faqs || []).filter(p => p.status === 'published'),
+          reviews: (db.reviews || []).filter(p => p.status === 'published'),
+          siteChrome: db.siteChrome || [], settings: db.settings || [], seo: db.seo || []
+        });
+      }
       // GET /api/data
       if (req.method === 'GET' && pathname === '/api/data') {
         const db = await readDb();
         if (isAdmin) return sendJson(res, 200, db);
-        const products = (db.products || []).map(product => {
+        const products = (db.products || []).filter(p => !p.status || p.status === 'published').map(product => {
           const { purchaseCost, traderPriceMin, traderPriceMax, margin, profitMargin, ...publicProduct } = product;
           return publicProduct;
         });
@@ -228,7 +331,8 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && pathname === '/api/products') {
         const body = await parseJsonBody(req);
         const db = await readDb();
-        const title = body.name || body.title || 'Medical Equipment Machine';
+        if (!String(body.name || body.title || '').trim()) return sendJson(res, 400, { error: 'Product name is required.' });
+        const title = body.name || body.title;
         const price = Number(body.sellingPrice !== undefined ? body.sellingPrice : body.price) || 0;
         const purchaseCost = Number(body.purchaseCost) || Math.round(price * 0.75);
         const categoryName = body.category || body.categoryName || 'Ultrasound & Fetal Imaging';
@@ -240,14 +344,19 @@ const server = http.createServer(async (req, res) => {
         const description = body.description || body.shortDesc || `High-performance medical equipment by ${brand}.`;
 
         const newProduct = {
-          id: body.id || `gnq-${Date.now()}`,
+          id: `gnq-${randomBytes(10).toString('hex')}`,
+          status: ['draft','published'].includes(body.status) ? body.status : 'published',
+          slug: body.slug || '',
+          seoTitle: body.seoTitle || '', seoDescription: body.seoDescription || '',
+          galleryImages: Array.isArray(body.galleryImages) ? body.galleryImages : [],
+          imageAlt: body.imageAlt || title,
           sku: sku,
           title: title,
           name: title,
           brand: brand,
-          brandId: brand.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+          brandId: body.brandId || brand.toLowerCase().replace(/[^a-z0-9]/g, '-'),
           model: model,
-          categoryId: (body.categoryId || categoryName.toLowerCase().replace(/[^a-z0-9]/g, '-')).slice(0, 24),
+          categoryId: body.categoryId || categoryName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
           categoryName: categoryName,
           category: categoryName,
           price: price,
@@ -257,7 +366,7 @@ const server = http.createServer(async (req, res) => {
           currency: 'AED',
           callForPrice: Boolean(body.callForPrice),
           inStock: Number(body.inStock) > 0 || body.inStock === true || body.inStock === undefined,
-          inStockCount: Number(body.inStock) || (body.inStock === false ? 0 : 5),
+          inStockCount: body.inStockCount !== undefined ? Math.max(0, Number(body.inStockCount) || 0) : (Number(body.inStock) || (body.inStock === false ? 0 : 5)),
           stockStatus: Number(body.inStock) > 0 || body.inStock !== false ? 'In Stock (Dubai Warehouse)' : 'Out of Stock',
           traderCompanyId: body.traderCompanyId || 'trader-ge-healthcare',
           traderCompanyName: body.traderCompanyName || brand || 'GE Healthcare UAE',
