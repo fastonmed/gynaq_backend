@@ -1,6 +1,6 @@
 import http from 'node:http';
 import sanitizeHtml from 'sanitize-html';
-import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
+import { randomBytes, createHash, timingSafeEqual, scryptSync } from 'node:crypto';
 import { readFile, writeFile, stat, copyFile, rename, readdir, realpath } from 'node:fs/promises';
 import { existsSync, mkdirSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
@@ -117,6 +117,12 @@ function authenticated(req) {
   if (!expiry || expiry < Date.now()) { sessions.delete(token); return false; }
   return true;
 }
+function verifyPassword(value, stored) {
+  if (!stored) return false;
+  if (!stored.startsWith('scrypt:')) return equalSecret(value, stored);
+  const [, salt, hash] = stored.split(':');
+  try { return timingSafeEqual(scryptSync(String(value), salt, 64), Buffer.from(hash, 'hex')); } catch { return false; }
+}
 function equalSecret(a, b) {
   const hash = v => createHash('sha256').update(String(v)).digest();
   return timingSafeEqual(hash(a), hash(b));
@@ -163,14 +169,16 @@ const server = http.createServer(async (req, res) => {
   if (pathname.startsWith('/api/')) {
     try {
       if (pathname === '/api/auth/login' && req.method === 'POST') {
-        if (!process.env.ADMIN_PASSWORD) return sendJson(res, 503, { error: 'Administrator password has not been configured in hosting yet.' });
+        const db = await readDb();
+        const activePassword = db.adminPasswordHash || db.adminPassword || process.env.ADMIN_PASSWORD;
+        if (!activePassword) return sendJson(res, 503, { error: 'Administrator password is not configured.' });
         const key = req.socket.remoteAddress;
         const now = Date.now();
         let attempt = loginAttempts.get(key);
         if (!attempt || attempt.until < now) { attempt = { count: 0, until: now + 900000 }; loginAttempts.set(key, attempt); }
         if (++attempt.count > 10) return sendJson(res, 429, { error: 'Too many attempts. Try again in 15 minutes.' });
         const body = await parseJsonBody(req);
-        if (!equalSecret(String(body.email || '').trim().toLowerCase(), (process.env.ADMIN_EMAIL || 'fastonmed@gmail.com').toLowerCase()) || !equalSecret(body.password || '', process.env.ADMIN_PASSWORD)) {
+        if (!equalSecret(String(body.email || '').trim().toLowerCase(), (process.env.ADMIN_EMAIL || 'fastonmed@gmail.com').toLowerCase()) || !verifyPassword(body.password || '', activePassword)) {
           return sendJson(res, 401, { error: 'Incorrect email or password.' });
         }
         const token = randomBytes(32).toString('hex');
@@ -206,6 +214,26 @@ const server = http.createServer(async (req, res) => {
       // Website console resources. All administrative reads and writes require a session.
       if (pathname.startsWith('/api/admin/')) {
         if (!isAdmin) return sendJson(res, 401, { error: 'Administrator sign-in required.' });
+        if (pathname === '/api/admin/change-password' && req.method === 'POST') {
+          const body = await parseJsonBody(req);
+          const current = String(body.currentPassword || '');
+          const next = String(body.newPassword || '');
+          const confirm = String(body.confirmPassword || '');
+          if (!current) return sendJson(res, 400, { error: 'Please enter your current password.' });
+          if (!next || next.length < 6) return sendJson(res, 400, { error: 'New password must be at least 6 characters.' });
+          if (next !== confirm) return sendJson(res, 400, { error: 'New password and confirmation do not match.' });
+          const db = await readDb();
+          const activePassword = db.adminPasswordHash || db.adminPassword || process.env.ADMIN_PASSWORD;
+        if (!activePassword) return sendJson(res, 503, { error: 'Administrator password is not configured.' });
+          if (!verifyPassword(current, activePassword)) {
+            return sendJson(res, 400, { error: 'Current password is incorrect.' });
+          }
+          const salt = randomBytes(16).toString('hex');
+          db.adminPasswordHash = 'scrypt:' + salt + ':' + scryptSync(next, salt, 64).toString('hex');
+          delete db.adminPassword;
+          await writeDb(db);
+          return sendJson(res, 200, { success: true, message: 'Password updated successfully.' });
+        }
         if (pathname === '/api/admin/storage/prepare' && req.method === 'POST') {
           const destination = '/home/u538435311/domains/api.gynaeq.com/gynaeq-data';
           // Copy only this application's data to its permanent private directory. Never overwrite a different database.
@@ -331,7 +359,10 @@ const server = http.createServer(async (req, res) => {
       // GET /api/data
       if (req.method === 'GET' && pathname === '/api/data') {
         const db = await readDb();
-        if (isAdmin) return sendJson(res, 200, db);
+        if (isAdmin) {
+          const { adminPassword, adminPasswordHash, ...safeDb } = db;
+          return sendJson(res, 200, safeDb);
+        }
         const products = (db.products || []).filter(p => !p.status || p.status === 'published').map(product => {
           const { purchaseCost, traderPriceMin, traderPriceMax, margin, profitMargin, ...publicProduct } = product;
           return publicProduct;
