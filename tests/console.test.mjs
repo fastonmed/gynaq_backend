@@ -21,6 +21,10 @@ test('console saves products and content while keeping drafts and private record
   };
   try {
     await new Promise((resolve, reject) => { let output = ''; child.stdout.on('data', chunk => { output += chunk; if (output.includes('Server Live')) resolve(); }); child.once('error', reject); child.once('exit', code => reject(Error(`Server exited ${code}`))); setTimeout(() => reject(Error('Startup timed out')), 5000).unref(); });
+    let localLogin = await fetch(`http://127.0.0.1:${port}/api/auth/login`, { method: 'POST', headers: { Origin: `http://127.0.0.1:${port}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'admin@example.test', password: 'test-only-password' }) });
+    assert.equal(localLogin.status, 200);
+    const rejectedOrigin = await fetch(`http://127.0.0.1:${port}/api/auth/login`, { method: 'POST', headers: { Origin: 'http://localhost:9999', 'Content-Type': 'application/json' }, body: '{}' });
+    assert.equal(rejectedOrigin.status, 403);
     let result = await request('/api/admin/resources/posts');
     assert.equal(result.response.status, 401);
     result = await request('/api/products', 'POST', { name: 'Denied' });

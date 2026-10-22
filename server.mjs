@@ -1,4 +1,5 @@
 import http from 'node:http';
+import sanitizeHtml from 'sanitize-html';
 import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
 import { readFile, writeFile, stat, copyFile, rename, readdir, realpath } from 'node:fs/promises';
 import { existsSync, mkdirSync } from 'node:fs';
@@ -64,6 +65,17 @@ async function writeDb(data) {
   await rename(tempFile, DB_FILE);
 }
 
+function sanitizeProduct(body) {
+  for (const field of ['description', 'fullHtmlDesc', 'clinicalDescription', 'complianceDescription', 'technicalDescription', 'shortDescription']) {
+    if (typeof body[field] === 'string') body[field] = sanitizeHtml(body[field], {
+      allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img', 'h1', 'h2', 'span'],
+      allowedAttributes: { ...sanitizeHtml.defaults.allowedAttributes, '*': ['style'], img: ['src', 'alt', 'width', 'height'] },
+      allowedStyles: { '*': { 'text-align': [/^(left|center|right|justify)$/], 'color': [/^#[0-9a-f]{3,8}$/i], 'background-color': [/^#[0-9a-f]{3,8}$/i] } },
+      allowedSchemes: ['http', 'https', 'mailto'], allowProtocolRelative: false
+    });
+  }
+  return body;
+}
 function parseJsonBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
@@ -118,13 +130,23 @@ const server = http.createServer(async (req, res) => {
   const pathname = url.pathname;
 
   const origin = req.headers.origin;
-  if (origin && allowedOrigins.has(origin)) {
+  // Local development is same-origin only and requires a loopback connection.
+  // Production never grants localhost access through CORS.
+  const loopbackPeer = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
+  let localSameOrigin = false;
+  try {
+    const source = new URL(origin);
+    localSameOrigin = loopbackPeer && source.protocol === 'http:' &&
+      ['localhost', '127.0.0.1', '[::1]'].includes(source.hostname) && source.host === req.headers.host;
+  } catch {}
+  const originAllowed = allowedOrigins.has(origin) || localSameOrigin;
+  if (origin && originAllowed) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Vary', 'Origin');
   }
   if (pathname.startsWith('/api/')) res.setHeader('Cache-Control', 'no-store');
-  if (origin && !allowedOrigins.has(origin) && !['GET', 'HEAD'].includes(req.method)) {
+  if (origin && !originAllowed && !['GET', 'HEAD'].includes(req.method)) {
     return sendJson(res, 403, { error: 'Origin not allowed' });
   }
 
@@ -364,7 +386,7 @@ const server = http.createServer(async (req, res) => {
 
       // POST /api/products (Supports both FastonMed format and GYNAEQ format)
       if (req.method === 'POST' && pathname === '/api/products') {
-        const body = await parseJsonBody(req);
+        const body = sanitizeProduct(await parseJsonBody(req));
         const db = await readDb();
         if (!String(body.name || body.title || '').trim()) return sendJson(res, 400, { error: 'Product name is required.' });
         const title = body.name || body.title;
@@ -380,7 +402,18 @@ const server = http.createServer(async (req, res) => {
 
         const newProduct = {
           id: `gnq-${randomBytes(10).toString('hex')}`,
-          status: ['draft','published'].includes(body.status) ? body.status : 'published',
+          status: ['draft','published','trash'].includes(body.status) ? body.status : 'published',
+          regularPrice: Number(body.regularPrice ?? body.price) || 0,
+          salePrice: Number(body.salePrice) || null,
+          purchaseMode: body.purchaseMode || 'quote',
+          shortDescription: body.shortDescription || body.shortDesc || '',
+          fullHtmlDesc: body.fullHtmlDesc || '',
+          clinicalDescription: body.clinicalDescription || '',
+          technicalDescription: body.technicalDescription || '',
+          complianceDescription: body.complianceDescription || '',
+          tags: Array.isArray(body.tags) ? body.tags : [],
+          galleryAlts: body.galleryAlts || {},
+          canonicalUrl: body.canonicalUrl || '', robotsDirective: body.robotsDirective || '', focusKeyword: body.focusKeyword || '',
           slug: body.slug || '',
           seoTitle: body.seoTitle || '', seoDescription: body.seoDescription || '',
           galleryImages: Array.isArray(body.galleryImages) ? body.galleryImages : [],
@@ -416,7 +449,7 @@ const server = http.createServer(async (req, res) => {
           badge: body.badge || 'New Medical Equipment',
           rating: 5.0,
           reviewsCount: 1,
-          shortDesc: description,
+          shortDesc: body.shortDescription || body.shortDesc || description,
           description: description,
           specifications: body.specifications || {
             'Category': categoryName,
@@ -440,7 +473,7 @@ const server = http.createServer(async (req, res) => {
       // PUT /api/products/:id
       if (req.method === 'PUT' && pathname.startsWith('/api/products/')) {
         const id = pathname.replace('/api/products/', '');
-        const body = await parseJsonBody(req);
+        const body = sanitizeProduct(await parseJsonBody(req));
         const db = await readDb();
         const index = (db.products || []).findIndex(p => p.id === id);
         if (index === -1) {
